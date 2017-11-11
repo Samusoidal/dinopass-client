@@ -1,2 +1,3 @@
 # dinopass-client
-A desktop client for password generator DinoPass.
+A python desktop client for password generator DinoPass (http://www.dinopass.com/), using the DinoPass API. Runs using Tkinter.
+
