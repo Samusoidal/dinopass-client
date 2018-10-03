@@ -28,73 +28,54 @@ Creates a textbox and populates it with the password variable
 password_entry = Entry(root,textvariable=password, font=("Helvetica",16))
 password_entry.pack(pady=10)
 
-'''
-Used to track last password_type retrieved.
-'''
-simple = True;
-
 
 def addToClipBoard(text):
     command = '@echo off | echo ' + text.strip() + '| clip'
     os.system(command)
 
-'''
-Sets password_type depending on whether simple is True or False
-'''
-def update_password_type():
-    global simple, password_type
-    if simple:
-        password_type.set("Simple Password")
-    else:
-        password_type.set("Complex Password")
 
 '''
 Gets a simple password using the dinopass API, and appends an exclamation mark to the end.
 The password is then automatically copied to the users clipboard.
 '''
 def get_simple_password():
-    global password, simple
+    global password
     request= requests.get("http://www.dinopass.com/password/simple")
     retrieved_password = request.text.capitalize() + '!'
     password.set(retrieved_password)
     root.clipboard_clear()
     root.clipboard_append(password.get())
-    simple = True
-    update_password_type()
+    password_type.set("Simple Password")
 
 '''
 Gets a strong password using the dinopass API, the password is then automatically copied to the users clipboard.
 '''
 def get_strong_password():
-    global password, simple
+    global password
     request = requests.get("http://www.dinopass.com/password/strong")
     retrieved_password = request.text
     password.set(retrieved_password)
     root.clipboard_clear()
     root.clipboard_append(password.get())
-    simple = False
-    update_password_type()
+    password_type.set("Complex Password")
 
 '''
 Retrieves a simple or strong password from Dinopass depending on the value of simple.
 '''
 def get_password(event):
-    global simple
-    if simple:
+    if password_type("Simple Password"):
         get_simple_password()
     else:
         get_strong_password()
 
 '''
-Changes simple to !simple
+If the password type is currently complex password it is converted to simple password and vice-versa.
 '''
 def switch_type(event):
-    global simple
-    if simple:
-        simple = False
+    if password_type.get() == "Simple Password":
+        password_type.set("Complex Password")
     else:
-        simple = True
-    update_password_type()
+        password_type.set("Simple Password")
 
 '''
 Creates a frame and sets the colour of the frame the buttons will be placed in.
