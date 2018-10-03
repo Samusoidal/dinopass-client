@@ -52,7 +52,7 @@ def update_password_type():
 Gets a simple password using the dinopass API, and appends an exclamation mark to the end.
 The password is then automatically copied to the users clipboard.
 '''
-def get_password():
+def get_simple_password():
     global password, simple
     request= requests.get("http://www.dinopass.com/password/simple")
     retrieved_password = request.text.capitalize() + '!'
@@ -65,7 +65,7 @@ def get_password():
 '''
 Gets a strong password using the dinopass API, the password is then automatically copied to the users clipboard.
 '''
-def get_password2():
+def get_strong_password():
     global password, simple
     request = requests.get("http://www.dinopass.com/password/strong")
     retrieved_password = request.text
@@ -78,12 +78,12 @@ def get_password2():
 '''
 Retrieves a simple or strong password from Dinopass depending on the value of simple.
 '''
-def get_p(event):
+def get_password(event):
     global simple
     if simple:
-        get_password()
+        get_simple_password()
     else:
-        get_password2()
+        get_strong_password()
 
 '''
 Changes simple to !simple
@@ -104,14 +104,14 @@ button_frame = Frame(root,bg="gray")
 '''
 Creates a button to retrieve a simple password and adds it to frame f.
 '''
-simple_button = Button(button_frame,text="Simple Password",command=get_password, font=("Helvetica",16))
+simple_button = Button(button_frame,text="Simple Password",command=get_simple_password, font=("Helvetica",16))
 simple_button.pack(pady=15, side=LEFT)
 
 
 '''
 Creates a button to retrieve a strong password, and adds it to frame f.
 '''
-strong_button = Button(button_frame,text="Strong Password",command=get_password2, font=("Helvetica",16))
+strong_button = Button(button_frame,text="Strong Password",command=get_strong_password, font=("Helvetica",16))
 strong_button.pack(pady=15, side=RIGHT)
 
 '''
@@ -122,7 +122,7 @@ button_frame.pack()
 '''
 Gets a password using the dinopass API if the return key is pressed.
 '''
-root.bind('<Return>',get_p)
+root.bind('<Return>',get_password)
 
 '''
 Changes the password type retrieved if any arrow key is pressed.
@@ -133,6 +133,6 @@ root.bind('<Up>',switch_type)
 root.bind('<Down>',switch_type)
 
 #init
-get_password() #Sets a default password
+get_simple_password() #Sets a default password
 
 root.mainloop() #Keeps the program running until the GUI is closed.
