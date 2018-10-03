@@ -11,7 +11,7 @@ root.title("DinoPass Client")
 '''
 Initialises the password and password type.
 '''
-pwd = StringVar() #Password
+password = StringVar() #Password
 ptype = StringVar() #Password type
 
 '''
@@ -23,9 +23,9 @@ t = Label(root,textvariable=ptype,font=("Helvetica",12), bg="gray")
 t.pack()
 
 '''
-Creates a textbox and populates it with the pwd variable
+Creates a textbox and populates it with the password variable
 '''
-e = Entry(root,textvariable=pwd, font=("Helvetica",16))
+e = Entry(root,textvariable=password, font=("Helvetica",16))
 e.pack(pady=10)
 
 '''
@@ -53,12 +53,12 @@ Gets a simple password using the dinopass API, and appends an exclamation mark t
 The password is then automatically copied to the users clipboard.
 '''
 def get_password():
-    global pwd, simple
+    global password, simple
     r = requests.get("http://www.dinopass.com/password/simple")
     p = r.text.capitalize() + '!'
-    pwd.set(p)
+    password.set(p)
     root.clipboard_clear()
-    root.clipboard_append(pwd.get())
+    root.clipboard_append(password.get())
     simple = True
     update_ptype()
 
@@ -66,12 +66,12 @@ def get_password():
 Gets a strong password using the dinopass API, the password is then automatically copied to the users clipboard.
 '''
 def get_password2():
-    global pwd, simple
+    global password, simple
     r = requests.get("http://www.dinopass.com/password/strong")
     p = r.text
-    pwd.set(p)
+    password.set(p)
     root.clipboard_clear()
-    root.clipboard_append(pwd.get())
+    root.clipboard_append(password.get())
     simple = False
     update_ptype()
 
