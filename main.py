@@ -1,87 +1,138 @@
 import requests, os
 from tkinter import *
 
+'''
+Creates the GUI Frame with a gray background and a title.
+'''
 root = Tk()
 root.configure(background="gray")
 root.title("DinoPass Client")
 
-pwd = StringVar()
-ptype = StringVar()
+'''
+Initialises the password and password type.
+'''
+password = StringVar() 
+password_type = StringVar()
 
-l = Label(root,text="DinoPass Client v0.1", font=("Impact",24), bg="gray")
-l.pack(padx=80,pady=15)
-t = Label(root,textvariable=ptype,font=("Helvetica",12), bg="gray")
-t.pack()
+'''
+Adds a label and packs it into the GUI
+'''
+root_label = Label(root,text="DinoPass Client v0.1", font=("Impact",24), bg="gray")
+root_label.pack(padx=80,pady=15)
+type_label = Label(root,textvariable=password_type,font=("Helvetica",12), bg="gray")
+type_label.pack()
 
-e = Entry(root,textvariable=pwd, font=("Helvetica",16))
-e.pack(pady=10)
+'''
+Creates a textbox and populates it with the password variable
+'''
+password_entry = Entry(root,textvariable=password, font=("Helvetica",16))
+password_entry.pack(pady=10)
 
+'''
+Used to track last password_type retrieved.
+'''
 simple = True;
+
 
 def addToClipBoard(text):
     command = '@echo off | echo ' + text.strip() + '| clip'
     os.system(command)
 
-def update_ptype():
-    global simple, ptype
+'''
+Sets password_type depending on whether simple is True or False
+'''
+def update_password_type():
+    global simple, password_type
     if simple:
-        ptype.set("Simple Password")
+        password_type.set("Simple Password")
     else:
-        ptype.set("Complex Password")
-    
-def get_password():
-    global pwd, simple
-    r = requests.get("http://www.dinopass.com/password/simple")
-    p = r.text.capitalize() + '!'
-    pwd.set(p)
+        password_type.set("Complex Password")
+
+'''
+Gets a simple password using the dinopass API, and appends an exclamation mark to the end.
+The password is then automatically copied to the users clipboard.
+'''
+def get_simple_password():
+    global password, simple
+    request= requests.get("http://www.dinopass.com/password/simple")
+    retrieved_password = request.text.capitalize() + '!'
+    password.set(retrieved_password)
     root.clipboard_clear()
-    root.clipboard_append(pwd.get())
+    root.clipboard_append(password.get())
     simple = True
-    update_ptype()
+    update_password_type()
 
-def get_password2():
-    global pwd, simple
-    r = requests.get("http://www.dinopass.com/password/strong")
-    p = r.text
-    pwd.set(p)
+'''
+Gets a strong password using the dinopass API, the password is then automatically copied to the users clipboard.
+'''
+def get_strong_password():
+    global password, simple
+    request = requests.get("http://www.dinopass.com/password/strong")
+    retrieved_password = request.text
+    password.set(retrieved_password)
     root.clipboard_clear()
-    root.clipboard_append(pwd.get())
+    root.clipboard_append(password.get())
     simple = False
-    update_ptype()
+    update_password_type()
 
-def get_p(event):
+'''
+Retrieves a simple or strong password from Dinopass depending on the value of simple.
+'''
+def get_password(event):
     global simple
     if simple:
-        get_password()
+        get_simple_password()
     else:
-        get_password2()
+        get_strong_password()
 
+'''
+Changes simple to !simple
+'''
 def switch_type(event):
     global simple
     if simple:
         simple = False
     else:
         simple = True
-    update_ptype()
-        
-f = Frame(root,bg="gray")
+    update_password_type()
 
-b = Button(f,text="Simple Password",command=get_password, font=("Helvetica",16))
-b.pack(pady=15, side=LEFT)
+'''
+Creates a frame and sets the colour of the frame the buttons will be placed in.
+'''
+button_frame = Frame(root,bg="gray")
 
-b2 = Button(f,text="Strong Password",command=get_password2, font=("Helvetica",16))
-b2.pack(pady=15, side=RIGHT)
+'''
+Creates a button to retrieve a simple password and adds it to frame f.
+'''
+simple_button = Button(button_frame,text="Simple Password",command=get_simple_password, font=("Helvetica",16))
+simple_button.pack(pady=15, side=LEFT)
 
-f.pack()
 
-root.bind('<Return>',get_p)
+'''
+Creates a button to retrieve a strong password, and adds it to frame f.
+'''
+strong_button = Button(button_frame,text="Strong Password",command=get_strong_password, font=("Helvetica",16))
+strong_button.pack(pady=15, side=RIGHT)
 
+'''
+Adds the frame to the root frame.
+'''
+button_frame.pack()
+
+'''
+Gets a password using the dinopass API if the return key is pressed.
+'''
+root.bind('<Return>',get_password)
+
+'''
+Changes the password type retrieved if any arrow key is pressed.
+'''
 root.bind('<Left>',switch_type)
 root.bind('<Right>',switch_type)
 root.bind('<Up>',switch_type)
 root.bind('<Down>',switch_type)
 
 #init
-get_password()
+get_simple_password() #Sets a default password
 
-root.mainloop()
+root.mainloop() #Keeps the program running until the GUI is closed.
