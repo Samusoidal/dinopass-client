@@ -11,8 +11,8 @@ root.title("DinoPass Client")
 '''
 Initialises the password and password type.
 '''
-password = StringVar() #Password
-password_type = StringVar() #Password type
+password = StringVar() 
+password_type = StringVar()
 
 '''
 Adds a label and packs it into the GUI
