@@ -68,8 +68,7 @@ def switch_type(event):
     else:
         password_type.set("Simple Password")
 
-#Creates a frame and sets the colour of the frame the buttons will be placed in.
-button_frame = Frame(root,bg="gray")
+button_frame = Frame(root,bg="gray") #Creates a frame and sets the colour of the frame the buttons will be placed in.
 
 #Creates a button to retrieve a simple password and adds it to frame f.
 simple_button = Button(button_frame,text="Simple Password",command=get_simple_password, font=("Helvetica",16))
@@ -79,11 +78,9 @@ simple_button.pack(pady=15, side=LEFT)
 strong_button = Button(button_frame,text="Strong Password",command=get_strong_password, font=("Helvetica",16))
 strong_button.pack(pady=15, side=RIGHT)
 
-#Adds the frame to the root frame.
-button_frame.pack()
+button_frame.pack() #Adds the frame to the root frame.
 
-#Gets a password using the dinopass API if the return key is pressed.
-root.bind('<Return>',get_password)
+root.bind('<Return>',get_password) #Gets a password using the dinopass API if the return key is pressed.
 
 #Changes the password type retrieved if any arrow key is pressed.
 root.bind('<Left>',switch_type)
